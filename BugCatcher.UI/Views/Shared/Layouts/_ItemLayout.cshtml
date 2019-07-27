@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BugCatcher.UI</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    </environment>
+</head>
+<body>
+    <partial name="~/Views/Shared/PartialViews/PartialHeader.cshtml" />
+
+    <div id="customDiv">
+    </div>
+
+    <partial name="_CookieConsentPartial" />
+    <main role="main" class="pb-3">
+        <div class="container-fluid">
+            <div class="row">
+                    @RenderBody()
+                </div>
+            </div>
+    </main>
+
+    <partial name="~/Views/Shared/PartialViews/PartialFooter.cshtml" />
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,23 @@
+﻿@using BugCatcher.UI.Models.Comments
+@model IEnumerable<CommentFileModel>
+<style>
+    .card{
+        width:100%; 
+    }
+</style>
+@foreach (var comFileModel in Model)
+{
+    <div class="form-group row">
+        <div class="card border-success mb-3">
+            <div class="card-header">UserName - @comFileModel.CreDate</div>
+            <div class="card-body text-success">
+                <p class="card-text">@comFileModel.Text</p>
+                @if (comFileModel.IsFile)
+                {
+                    <a href="~/ItemsFiles/@comFileModel.Text" target="_blank" class="card-link">View File</a>
+                }
+                <a href="javascript:;" onclick="DeleteFileOrComment(@comFileModel.Id,'@comFileModel.IsFile')" id="btnDeleteFile" target="_blank" class="card-link">Delete</a>
+            </div>
+        </div>
+    </div>
+}

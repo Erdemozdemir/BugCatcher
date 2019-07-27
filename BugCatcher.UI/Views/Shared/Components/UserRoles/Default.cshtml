@@ -1,0 +1,26 @@
+﻿@model IEnumerable<string>
+
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                Role
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item)
+                </td>
+                <td>
+                    <button class="btn btn-primary" data-delete-role id="btnDeleteUserRole" data-role-name="@item">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

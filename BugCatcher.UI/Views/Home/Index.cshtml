@@ -1,0 +1,76 @@
+﻿@model TableRenderModel
+@using BugCatcher.WebApplication.Helpers
+
+@{
+    Layout = "~/Views/Shared/Layouts/_Layout.cshtml";
+}
+
+@section Styles{
+    <link href="~/css/filter.css" rel="stylesheet" />
+    <style>
+        .container {
+            max-width: 1900px;
+            margin: 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+    </style>
+}
+
+<form asp-controller="Index" asp-action="Home" method="post">
+    <div class="container">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    @foreach (var item in Model.Properties)
+                    {
+                        <th scope="col">@item.Name</th>
+                    }
+                </tr>
+                <tr class="filters">
+                    @foreach (var item in Model.Properties)
+                    {
+                        <th><input type="text" class="filterable" placeholder="@item.Name" /></th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var itemSelect in Model.ItemSelects)
+                {
+                    <tr onclick="document.location = '/@Url.FriendlyUrl(itemSelect.Item.Title)/@itemSelect.Item.Id';">
+                        <td>@itemSelect.Item.Title</td>
+                        <td><select asp-items='@itemSelect.ProjectSelect' class="custom-select"></select></td>
+                        <td><select asp-items='@itemSelect.PrioritySelect' class="custom-select"></select></td>
+                        <td><select asp-items='@itemSelect.TeamSelect' class="custom-select"></select></td>
+                        <td><select asp-items='@itemSelect.AssignedUserSelect' class="custom-select"></select></td>
+                        <td><select asp-items='@itemSelect.StageSelect' class="custom-select"></select></td>
+                        <td><select asp-items='@itemSelect.StatusSelect' class="custom-select"></select></td>
+                        <td><select asp-items='@itemSelect.SprintSelect' class="custom-select"></select></td>
+                        <td scope="row">@itemSelect.Item.Id</td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+        }
+
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           class="btn btn-default @prevDisabled">
+            Previous
+        </a>
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           class="btn btn-default @nextDisabled">
+            Next
+        </a>
+    </div>
+
+    @section Scripts{
+        <script src="~/js/filter.js"></script>
+    }
+</form>

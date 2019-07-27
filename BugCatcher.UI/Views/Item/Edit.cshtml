@@ -1,0 +1,207 @@
+﻿@model BugCatcher.Entities.Concrete.ItemEntity
+@using BugCatcher.BusinessLayer.Managers;
+@using BugCatcher.Entities.Concrete;
+
+
+@{
+    Layout = "~/Views/Shared/Layouts/_ItemLayout.cshtml";
+}
+
+
+<div class="col-2">
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item" data-toggle="modal" data-target="#AttachmentModal">Save Attachment</li>
+        <li class="list-group-item" data-toggle="modal" data-target="#AddSubsModal">Add Subscriber</li>
+    </ul>
+</div>
+<div class="col-10">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <form asp-controller="Item" asp-action="Edit" method="post">
+        <div class="container">
+            <div class="form-group row">
+                <label asp-for="Title" class="col-sm-2 col-form-label"> Item Title</label>
+                <div class="col-sm-10">
+                    <input asp-for="Title" class="form-control" />
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label asp-for="Project" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="Project" asp-items='@new EfGenericRepository<ProjectEntity>().GetSelectListItems("Name","Id","Choose Project",Model.Id)' class="custom-select"></select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label asp-for="Team" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="Team.Id" asp-items='@new EfGenericRepository<TeamEntity>().GetSelectListItems("Name","Id","Choose Team",Model.Id)' class="custom-select"></select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label asp-for="Priority" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="Priority.Id" asp-items='@new EfGenericRepository<PriorityEntity>().GetSelectListItems("Name","Id","Choose Priority",Model.Id)' class="custom-select"></select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label asp-for="Stage" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="Stage.Id" asp-items='@new EfGenericRepository<StageEntity>().GetSelectListItems("Name","Id","Choose Stage",Model.Id)' class="custom-select"></select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label asp-for="Status" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="Status.Id" asp-items='@new EfGenericRepository<StatusEntity>().GetSelectListItems("Name","Id","Choose Status",Model.Id)' class="custom-select"></select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label asp-for="AssignedUser" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="AssignedUser.Id" asp-items='@(new EfUserRepository().GetSelectListItems("Choose A User"))' class="custom-select"></select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label asp-for="Sprint" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="Sprint.Id" asp-items='@new EfGenericRepository<SprintEntity>().GetSelectListItems("Name","Id",null,Model.Id)' class="custom-select"></select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label asp-for="Deadline" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <input asp-for="Deadline" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="comment" class="col-sm-2 col-form-label">Comment</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" name="comment"> Test yorumudur</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-2">
+                    <input type="submit" class="btn btn-primary" value="Submit" />
+                </div>
+            </div>
+
+            <div id="CommentsAndFiles">
+                @await Component.InvokeAsync("CommentsAndFile", Model.Id)
+            </div>
+
+            @*<partial name="~/Views/Item/PartialFileUpload.cshtml">*@
+        </div>
+    </form>
+</div>
+
+<!-- Modals -->
+@await Html.PartialAsync("~/Views/Item/PartialFileUpload.cshtml")
+@await Html.PartialAsync("~/Views/Item/PartialAddSubs.cshtml")
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#btnSaveFiles").on("click",(function () {
+                var input = document.getElementById("imageUploadForm");
+                var files = input.files;
+                var formData = new FormData();
+
+                for (var i = 0; i != files.length; i++) {
+                    formData.append("files", files[i]);
+                }
+
+                $.ajax({
+                    url: '/Item/Upload/' +@Model.Id,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRF",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    type: "POST",
+                    success: function (response) {
+                        console.log(response)
+                        setAlert("alert-success", response);
+                        GetCommensAndFiles();
+                        $("#btnCloseAlert").trigger("click")
+                    },
+                    failure: function (response) {
+                        console.log("error")
+                        setAlert("alert-danger", response);
+                    }
+                });
+            }));
+
+            $("#btnSaveSub").on("click",(function () {
+                var userId = document.getElementById("userModalSelect").value;
+                console.log(userId)
+                console.log(@Model.Id)
+                $.ajax({
+                    url: '/addSubs/'+@Model.Id+"/" + userId,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRF",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    processData: false,
+                    contentType: false,
+                    type: "POST",
+                    success: function (response) {
+                        console.log(response)
+                        GetItemSubs();
+                        setAlert("alert-success", response);
+                        $("#btnCloseSubModel").trigger("click");
+                    },
+                    failure: function (response) {
+                        console.log("error")
+                        setAlert("alert-danger", response);
+                    }
+                });
+            }));
+    });
+
+    function DeleteFileOrComment(fileId, isFile) {
+        $.ajax({
+            url: '/deleteFileOrComment/' + fileId + "/" + isFile,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRF",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    type: "POST",
+                    success: function (response) {
+                        console.log(response)
+                        setAlert("alert-success", response);
+                        GetCommensAndFiles();
+                    },
+                    failure: function (response) {
+                        console.log("error")
+                        setAlert("alert-danger", response);
+                    }
+                });
+    }
+
+    function GetCommensAndFiles() {
+        $("#CommentsAndFiles").load('/ViewComponent/GetCommentsAndFiles/'+@Model.Id)
+        }
+
+    function GetItemSubs() {
+        $("#divItemSubs").load('/ViewComponent/GetItemSubs/'+@Model.Id)
+    }
+    </script>
+
+}

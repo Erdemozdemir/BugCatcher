@@ -1,0 +1,114 @@
+﻿@model UserRoleModel
+
+@{
+    ViewData["Title"] = "User Roles";
+    Layout = "~/Views/Shared/Layouts/_Layout.cshtml";
+}
+<form asp-controller="Admin" method="post">
+    <div class="container">
+        <h1>Users Roles</h1>
+
+        @if (Model.Roles.Count > 0)
+        {
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Add Role</label>
+                <div class="col-sm-10">
+                    <select asp-items='@Model.Roles' asp-for="Roles" class="custom-select" id="roleSelect"></select>
+                    <button type="submit">ADD</button>
+                    @*<button class="btn btn-primary" id="btnAddRoleToUser">Add</button>*@
+                </div>
+
+            </div>
+        }
+
+
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        Role
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Roles)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item)
+                        </td>
+                        <td>
+                            <a asp-action="AddRole"></a>
+                            @*   <button class="btn btn-primary" data-delete-role id="btnDeleteUserRole" data-role-name="@item">Delete</button>*@
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @*<div id="divUserRoles">
+                @await Component.InvokeAsync("UserRoles", Model.User.Id)
+            </div>*@
+    </div>
+
+
+    @*@section Scripts{
+            <script>
+        $(document).ready(function () {
+            $("#btnAddRoleToUser").on("click",(function () {
+                    var roleName = document.getElementById("roleSelect").value;
+                    console.log("@Model.User.Id")
+                    $.ajax({
+                        url: '/addRole/@Model.User.Id/' + roleName,
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRF",
+                                $('input:hidden[name="__RequestVerificationToken"]').val());
+                        },
+                        processData: false,
+                        contentType: false,
+                        type: "POST",
+                        success: function (response) {
+                            console.log(response)
+                            setAlert("alert-success", response);
+                            GetUserRoles();
+                        },
+                        failure: function (response) {
+                            console.log("error")
+                            setAlert("alert-danger", response);
+                        }
+                });
+            }));
+
+            $("button[data-delete-role]").on("click", (function () {
+                var roleName = $(this).data("role-name");
+                console.log(roleName)
+                $.ajax({
+                    url: '/deleteUserRole/@Model.User.Id/' + roleName,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRF",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    processData: false,
+                    contentType: false,
+                    type: "POST",
+                    success: function (response) {
+                        console.log(response)
+                        setAlert("alert-success", response);
+                        GetUserRoles();
+                    },
+                    failure: function (response) {
+                        console.log("error")
+                        setAlert("alert-danger", response);
+                    }
+                });
+            }));
+        });
+
+            function GetUserRoles() {
+                $("#divUserRoles").load('/ViewComponent/GetUserRoles/@Model.User.Id');
+            };
+            </script>
+        }*@
+</form>

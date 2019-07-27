@@ -1,0 +1,41 @@
+﻿@model BugCatcher.Entities.Concrete.QueryEntity
+
+@{
+    ViewData["Title"] = "New Query";
+    Layout = "~/Views/Shared/Layouts/_Layout.cshtml";
+}
+
+<div class="container">
+    <hr />
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="NewQuery">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Query" class="control-label"></label>
+                    <textarea rows="4"  asp-for="Query" class="form-control" ></textarea>
+                    <span>Only where clause accepted. Default Query selecting item entity</span><br />
+                    <span asp-validation-for="Query" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" checked asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="QueryList">Back to List</a>
+    </div>
+
+</div>

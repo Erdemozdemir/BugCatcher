@@ -1,0 +1,99 @@
+﻿@model BugCatcher.Entities.Concrete.ItemEntity
+@using BugCatcher.BusinessLayer.Managers;
+@using BugCatcher.Entities.Concrete;
+
+@{
+    Layout = "~/Views/Shared/Layouts/_ItemLayout.cshtml";
+}
+
+<div class="col-10">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <form asp-controller="Item" asp-action="Create" method="post">
+        <div class="container">
+            <div class="form-group row">
+                <label asp-for="Title" class="col-sm-2 col-form-label"> Item Title</label>
+                <div class="col-sm-10">
+                    <input asp-for="Title" class="form-control" />
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label asp-for="Project.Id" class="col-sm-2 col-form-label">Project Name</label>
+                <div class="col-sm-10">
+                    <select asp-for="Project.Id" asp-items='@new EfGenericRepository<ProjectEntity>().GetSelectListItems("Name","Id","Choose Project",null)' class="custom-select"></select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label asp-for="Team" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="Team.Id" asp-items='@new EfGenericRepository<TeamEntity>().GetSelectListItems("Name","Id","Choose Team",null)' class="custom-select"></select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label asp-for="Priority" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="Priority.Id" asp-items='@new EfGenericRepository<PriorityEntity>().GetSelectListItems("Name","Id","Choose Priority",null)' class="custom-select"></select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label asp-for="Stage" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="Stage.Id" asp-items='@new EfGenericRepository<StageEntity>().GetSelectListItems("Name","Id","Choose Stage",null)' class="custom-select"></select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label asp-for="Status" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="Status.Id" asp-items='@new EfGenericRepository<StatusEntity>().GetSelectListItems("Name","Id","Choose Status",null)' class="custom-select"></select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label asp-for="AssignedUser" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="AssignedUser.Id" asp-items='@(new EfUserRepository().GetSelectListItems("Choose A User"))' class="custom-select"></select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label asp-for="Sprint" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <select asp-for="Sprint.Id" asp-items='@new EfGenericRepository<SprintEntity>().GetSelectListItems("Name","Id",null,null)' class="custom-select"></select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label asp-for="Deadline" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <input asp-for="Deadline" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="comment" class="col-sm-2 col-form-label">Comment</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" name="comment"> Test yorumudur</textarea>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-2">
+                    <input type="submit" class="btn btn-primary" value="Submit" />
+                </div>
+            </div>
+
+
+        </div>
+    </form>
+</div>

@@ -1,0 +1,8 @@
+﻿@model IEnumerable<BugCatcher.Entities.Concrete.UserEntity>
+
+<ul class="list-group">
+    @foreach (var user in Model)
+    {
+        <li class="list-group-item">@($"{user.UserName}")</li>
+    }
+</ul>
